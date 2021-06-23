@@ -58,6 +58,19 @@ public class SerializationOfOrAndEvalTest {
 	
 	@Test
 	public void orAndEval() throws IOException, ClassNotFoundException {
+		
+		KieSession session = this.kieBase.newKieSession();
+
+		ClassWithValue c = new ClassWithValue();
+		session.insert(c);
+		
+		session.startProcess(PROCESS_ID);
+		
+		session.fireAllRules();
+	}
+	
+	@Test
+	public void orAndEvalSerialized() throws IOException, ClassNotFoundException {
 		Path filePath = Paths.get("orAndEval.kieBase");
 		
 		try(OutputStream fos = Files.newOutputStream(filePath);
