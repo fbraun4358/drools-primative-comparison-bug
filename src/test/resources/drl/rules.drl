@@ -1,18 +1,21 @@
 package com.example.rules
 
 import java.util.List
+import java.util.Arrays
 
-import com.example.ClassWithValue
+import com.example.ClassWithValues
 
 rule "Rules that breaks serialization"
 ruleflow-group "RFG-1"
     when
-    	$cwv: (
-    		ClassWithValue( $v: value )
-    		or
-    		ClassWithValue( $v: value )
-    	)
-        eval( $v == "true" )
+    	$cwvs: List(size > 0) from collect (ClassWithValues(values.size == 0))
+    	$values: List(size > 0) from collect (String())
     then
-        System.out.println("'" + $v + "' is true");
+    	
+    	for(ClassWithValues cwv: (List<ClassWithValues>)$cwvs){
+    		cwv.add("not in memory");
+    		((List<String>)$values).forEach(cwv::add);
+    		
+    		update(cwv);
+    	}
 end
