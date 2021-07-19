@@ -1,18 +1,22 @@
 package com.example.rules
 
-import java.util.List
+import java.util.*
 
-import com.example.ClassWithValue
+import com.example.*
 
-rule "Rules that breaks serialization"
+rule "Rule that breaks ExecutableModel"
+@filename("rules.drl")
 ruleflow-group "RFG-1"
+salience 5
     when
-    	$cwv: (
-    		ClassWithValue( $v: value )
-    		or
-    		ClassWithValue( $v: value )
-    	)
-        eval( $v == "true" )
+    	$values:		List()
+		codef:			ClassWithValue(
+							$value: value<value_type> != <test_value>
+						)
+						
+		exists			ClassWithValue(
+							value<value_type> != $value
+						)
     then
-        System.out.println("'" + $v + "' is true");
+    	$values.add($value);
 end
