@@ -1,21 +1,22 @@
 package com.example.rules
 
-import java.util.List
-import java.util.Arrays
+import java.util.*
 
-import com.example.ClassWithValues
+import com.example.*
 
-rule "Rules that breaks serialization"
+rule "Rule that breaks ExecutableModel"
+@filename("rules.drl")
 ruleflow-group "RFG-1"
+salience 5
     when
-    	$cwvs: List(size > 0) from collect (ClassWithValues(values.size == 0))
-    	$values: List(size > 0) from collect (String())
+    	$values:		List()
+		codef:			ClassWithValue(
+							$value: value<value_type> != <test_value>
+						)
+						
+		exists			ClassWithValue(
+							value<value_type> != $value
+						)
     then
-    	
-    	for(ClassWithValues cwv: (List<ClassWithValues>)$cwvs){
-    		cwv.add("not in memory");
-    		((List<String>)$values).forEach(cwv::add);
-    		
-    		update(cwv);
-    	}
+    	$values.add($value);
 end
